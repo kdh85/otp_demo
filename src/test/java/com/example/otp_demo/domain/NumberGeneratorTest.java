@@ -12,7 +12,7 @@ class NumberGeneratorTest {
 
     @DisplayName("0 부터 9999까지 4자리 포맷의 자연수를 생성하여 반환한다.")
     @Test
-    void test() {
+    void numberCreateTest() {
         //given
         List<String> numbers = NumberGenerator.getNumbers();
         //then
