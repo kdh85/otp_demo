@@ -1,5 +1,6 @@
 package com.example.otp_demo.domain;
 
+import com.google.common.base.Strings;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.ToString;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @Getter
 @ToString
@@ -32,6 +34,8 @@ public class DefaultOtpToken {
     }
 
     public static DefaultOtpToken DefaultOtpOf(String id, String custId, String otpNumber, ZonedDateTime day) {
+        validationDefaultOtpTokenParameters(id, custId, otpNumber, day);
+
         return DefaultOtpToken.builder()
                 .id(id)
                 .custId(custId)
@@ -44,6 +48,8 @@ public class DefaultOtpToken {
 
     public static DefaultOtpToken todayOtpOf(String id, String custId, String otpNumber) {
         ZonedDateTime today = ZonedDateTime.now();
+        validationDefaultOtpTokenParameters(id, custId, otpNumber, today);
+
         return DefaultOtpToken.builder()
                 .id(id)
                 .custId(custId)
@@ -52,6 +58,20 @@ public class DefaultOtpToken {
                 .expireDateTime(makeExpireDateTime(today))
                 .leaseDateTime(makeLeaseDateTime(today))
                 .build();
+    }
+
+    private static void validationDefaultOtpTokenParameters(String id, String custId, String otpNumber, ZonedDateTime dateTime) {
+        Optional.ofNullable(Strings.emptyToNull(id))
+                .orElseThrow(() -> new IllegalArgumentException("id is null"));
+
+        Optional.ofNullable(Strings.emptyToNull(custId))
+                .orElseThrow(() -> new IllegalArgumentException("custId is null"));
+
+        Optional.ofNullable(Strings.emptyToNull(otpNumber))
+                .orElseThrow(() -> new IllegalArgumentException("otpNumber is null"));
+
+        Optional.ofNullable(dateTime)
+                .orElseThrow(() -> new IllegalArgumentException("dateTime is null"));
     }
 
     private static String makeCreateDateTime(ZonedDateTime dateTime) {
